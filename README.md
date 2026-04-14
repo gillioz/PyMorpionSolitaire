@@ -2,6 +2,8 @@
 
 A fast C++ engine for the pen-and-paper game [Morpion Solitaire](https://en.wikipedia.org/wiki/Morpion_solitaire), with Python bindings via pybind11.
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gillioz/PyMorpionSolitaire/main)
+
 ## The game
 
 Morpion Solitaire is a single-player game played on a grid. You start from a cross-shaped pattern of dots and take turns placing a new dot such that it completes a line of exactly *n* dots (including itself). The goal is to place as many dots as possible before no moves remain.
