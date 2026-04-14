@@ -1,0 +1,21 @@
+[build-system]
+requires = ["scikit-build-core>=0.9", "pybind11>=2.12"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "pymorpionsolitaire"
+version = "0.1.0"
+description = "Fast C++ engine for the Morpion Solitaire pen-and-paper game, with Python bindings"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+# No required runtime dependencies.
+# matplotlib is only needed for the .print() / .printMove() visualisation methods.
+dependencies = []
+
+[project.optional-dependencies]
+viz = ["matplotlib"]
+
+[tool.scikit-build]
+cmake.build-type = "Release"
+wheel.packages = ["pymorpionsolitaire"]
