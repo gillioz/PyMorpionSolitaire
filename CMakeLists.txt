@@ -4,17 +4,37 @@ project(PyMorpionSolitaire)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Ensures all targets (including static libs linked into the Python extension)
+# are compiled with -fPIC, which is required when linking into a shared object.
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# Default to Release (-O3 -DNDEBUG) for manual cmake builds.
+# scikit-build-core already sets this to Release when building the package.
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
 # ---------------------------------------------------------------------------
 # Dependencies
 # ---------------------------------------------------------------------------
 
-# pybind11 is provided by scikit-build-core as a build-time Python package.
-# When developing locally you can also install it with: pip install pybind11
-find_package(pybind11 CONFIG REQUIRED)
+include(FetchContent)
+
+# pybind11 is provided automatically by scikit-build-core during pip install.
+# For direct cmake invocations (e.g. cmake -DBUILD_DEV_TOOLS=ON) it is
+# fetched automatically if not already present on the system.
+find_package(pybind11 CONFIG QUIET)
+if(NOT pybind11_FOUND)
+    FetchContent_Declare(
+        pybind11
+        GIT_REPOSITORY https://github.com/pybind/pybind11.git
+        GIT_TAG        v2.13.6
+    )
+    FetchContent_MakeAvailable(pybind11)
+endif()
 
 # jsoncpp is fetched automatically so that anyone can build the package
 # without needing a system/conda installation of jsoncpp.
-include(FetchContent)
 FetchContent_Declare(
     jsoncpp
     GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
@@ -70,12 +90,28 @@ install(TARGETS CppMorpionSolitaire DESTINATION pymorpionsolitaire)
 option(BUILD_DEV_TOOLS "Build C++ test executables and PlayNestedMC" OFF)
 
 if(BUILD_DEV_TOOLS)
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG        v3.6.0
+    )
+    FetchContent_MakeAvailable(Catch2)
+
+    # Place all dev executables directly in build/ for easy access
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
     add_executable(GameTests tests/GameTest.cpp)
-    target_link_libraries(GameTests PRIVATE morpion_core)
+    target_link_libraries(GameTests PRIVATE morpion_core Catch2::Catch2WithMain)
 
     add_executable(GraphGameTests tests/GraphGameTest.cpp)
-    target_link_libraries(GraphGameTests PRIVATE morpion_core)
+    target_link_libraries(GraphGameTests PRIVATE morpion_core Catch2::Catch2WithMain)
 
     add_executable(PlayNestedMC src/PlayNestedMC.cpp)
     target_link_libraries(PlayNestedMC PRIVATE morpion_core)
+
+    # Register tests with CTest
+    include(CTest)
+    include(Catch)
+    catch_discover_tests(GameTests)
+    catch_discover_tests(GraphGameTests PROPERTIES TIMEOUT 30)
 endif()

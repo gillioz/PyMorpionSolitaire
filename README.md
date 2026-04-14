@@ -18,7 +18,7 @@ The package supports four variants of the game:
 ## Installation
 
 ```bash
-pip install pymorpionsolitaire
+pip install morpion-solitaire
 ```
 
 The package compiles from source on install, so you need a C++17 compiler (`g++` or `clang++`) and CMake ≥ 3.25. jsoncpp and pybind11 are fetched automatically during the build.
@@ -26,7 +26,7 @@ The package compiles from source on install, so you need a C++17 compiler (`g++`
 For visualisation (the `.print()` method) you also need matplotlib:
 
 ```bash
-pip install "pymorpionsolitaire[viz]"
+pip install "morpion-solitaire[viz]"
 ```
 
 ### Installing from source
@@ -63,7 +63,7 @@ print(game.getNumberOfMoves())  # 0 — game is over
 
 ```python
 game = Game5T()
-game.playAtRandom()          # play one random move
+game.playAtRandom(1)         # play one random move
 game.playAtRandom(10)        # play 10 random moves
 game.playAtRandom()          # play to the end (no argument = until stuck)
 ```
@@ -220,7 +220,7 @@ import time
 from pymorpionsolitaire import Game5T
 
 game = Game5T()
-n = 1000
+n = 10_000
 t0 = time.perf_counter()
 for _ in range(n):
     game.playAtRandom()
@@ -232,3 +232,49 @@ print(f"{n / elapsed:.0f} random games/second")
 ## Licence
 
 MIT
+
+## Development and running tests
+
+The C++ tests require CMake and are built separately from the Python package. From the repo root:
+
+```bash
+cmake -B build -DBUILD_DEV_TOOLS=ON
+cmake --build build
+```
+
+This fetches [Catch2](https://github.com/catchorg/Catch2) automatically and compiles `GameTests` and `GraphGameTests`. To run all tests:
+
+```bash
+ctest --test-dir build --output-on-failure
+```
+
+### Selective test runs
+ 
+The tests are tagged, which allows running subsets. You can filter through `ctest` or by calling the executables directly.
+ 
+Run only the core game tests:
+```bash
+./build/GameTests
+```
+ 
+Run only the graph game tests, excluding slow ones:
+```bash
+./build/GraphGameTests ~[slow]
+```
+ 
+Run the slow NMCS algorithm tests explicitly (may take several minutes):
+```bash
+./build/GraphGameTests [slow]
+```
+ 
+Run the performance benchmarks:
+```bash
+./build/GraphGameTests [benchmark]
+```
+ 
+List all available tests without running them:
+```bash
+./build/GameTests --list-tests
+./build/GraphGameTests --list-tests
+```
+ 
