@@ -1,0 +1,10 @@
+name: pymorpionsolitaire
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyter
+  - matplotlib
+  - pip
+  - pip:
+    - git+https://github.com/gillioz/PyMorpionSolitaire.git

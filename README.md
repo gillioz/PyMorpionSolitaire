@@ -57,6 +57,12 @@ print(game.getScore())          # typically 50–70 for a random game
 print(game.getNumberOfMoves())  # 0 — game is over
 ```
 
+## Examples
+
+Two Jupyter notebooks are provided as examples:
+- [01_basic_usage](./examples/01_basic_usage.ipynb) shows how the module works.
+- [02_statistics](./examples/02_statistics.ipynb) explores the outcome of Monte-Carlo simulations of the game, both using a naive approach and the more advanced [Nested Monte-Carlo search method of Tristan Cazenave](https://www.ijcai.org/Proceedings/09/Papers/083.pdf).
+
 ## Playing strategies
 
 ### Random play
