@@ -18,4 +18,10 @@ viz = ["matplotlib"]
 
 [tool.scikit-build]
 cmake.build-type = "Release"
-wheel.packages = ["pymorpionsolitaire"]
+wheel.packages = ["PyMorpionSolitaire"]
+
+# Default value for the board image size (3 * 64).
+# Override at install time with:
+#   pip install --config-settings cmake.define.IMAGESIZE=384 .
+[tool.scikit-build.cmake.define]
+IMAGESIZE = "192"

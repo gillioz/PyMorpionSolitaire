@@ -1,4 +1,4 @@
-name: pymorpionsolitaire
+name: PyMorpionSolitaire
 channels:
   - conda-forge
 dependencies:

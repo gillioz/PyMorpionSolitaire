@@ -1,10 +1,10 @@
-# pymorpionsolitaire/__init__.py
+# PyMorpionSolitaire/__init__.py
 #
 # This package wraps the C++ extension CppMorpionSolitaire and re-exports its
 # four game classes under a clean top-level namespace.
 #
 # Usage:
-#   from pymorpionsolitaire import Game5T
+#   from PyMorpionSolitaire import Game5T
 #   g = Game5T()       # 5-in-a-row, touching variant
 #   g.playAtRandom()
 #   print(g.getScore())

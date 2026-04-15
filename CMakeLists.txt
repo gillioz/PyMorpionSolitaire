@@ -64,12 +64,21 @@ set(GAME_SOURCES
         src/GraphGame.cpp)
 
 # ---------------------------------------------------------------------------
+# Build-time configuration
+# ---------------------------------------------------------------------------
+
+set(IMAGESIZE 192 CACHE STRING
+    "Size of the square board image array (default: 192). Must be large \
+enough to contain any grid position reachable in a game.")
+
+# ---------------------------------------------------------------------------
 # Core game logic — a private static library, not installed
 # ---------------------------------------------------------------------------
 
 add_library(morpion_core STATIC ${GAME_SOURCES})
 target_include_directories(morpion_core PUBLIC include)
 target_link_libraries(morpion_core PUBLIC jsoncpp_static)
+target_compile_definitions(morpion_core PUBLIC IMAGESIZE=${IMAGESIZE})
 
 # ---------------------------------------------------------------------------
 # Python extension module
@@ -79,8 +88,8 @@ pybind11_add_module(CppMorpionSolitaire src/PyMorpionSolitaire.cpp)
 target_link_libraries(CppMorpionSolitaire PRIVATE morpion_core)
 
 # scikit-build-core looks for install() rules to know what to put in the wheel.
-# The destination "pymorpionsolitaire" matches the Python package folder name.
-install(TARGETS CppMorpionSolitaire DESTINATION pymorpionsolitaire)
+# The destination "PyMorpionSolitaire" matches the Python package folder name.
+install(TARGETS CppMorpionSolitaire DESTINATION PyMorpionSolitaire)
 
 # ---------------------------------------------------------------------------
 # Optional developer targets (only built when -DBUILD_DEV_TOOLS=ON)

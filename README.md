@@ -44,7 +44,7 @@ pip install -e .
 ## Quick start
 
 ```python
-from pymorpionsolitaire import Game5T
+from PyMorpionSolitaire import Game5T
 
 # Create a new game (standard cross-shaped starting position)
 game = Game5T()
@@ -181,7 +181,7 @@ The board state is available as a 2D boolean array, and the set of candidate mov
 
 ```python
 import numpy as np
-from pymorpionsolitaire import Game5T
+from PyMorpionSolitaire import Game5T
 
 game = Game5T()
 game.playAtRandom(20)
@@ -212,7 +212,7 @@ game.printMove(0)          # display the board with move 0 highlighted in blue
 The default starting position is a cross (`'c'`). A pipe-shaped starting position is also available:
 
 ```python
-from pymorpionsolitaire import Game5T
+from PyMorpionSolitaire import Game5T
 
 cross_game = Game5T('c')   # default
 pipe_game  = Game5T('p')
@@ -225,7 +225,7 @@ The engine is designed for high-throughput use in research and machine learning 
 
 ```python
 import time
-from pymorpionsolitaire import Game5T
+from PyMorpionSolitaire import Game5T
 
 game = Game5T()
 n = 10_000

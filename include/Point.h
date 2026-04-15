@@ -4,7 +4,9 @@
 
 //#include <cstdint>
 
-const int IMAGESIZE = 3 * 64;
+#ifndef IMAGESIZE
+#define IMAGESIZE 192 // 3 * 64
+#endif
 
 // Points are pairs of integers in the range (0, IMAGESIZE),
 // stored for convenience into a single int
