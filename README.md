@@ -2,20 +2,22 @@
 
 A fast C++ engine for the pen-and-paper game [Morpion Solitaire](https://en.wikipedia.org/wiki/Morpion_solitaire), with Python bindings via pybind11.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gillioz/PyMorpionSolitaire/main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gillioz/PyMorpionSolitaire/main?urlpath=tree/examples)
 
 ## The game
 
-Morpion Solitaire is a single-player game played on a grid. You start from a cross-shaped pattern of dots and take turns placing a new dot such that it completes a line of exactly *n* dots (including itself). The goal is to place as many dots as possible before no moves remain.
+Morpion Solitaire (aka. [Join Five](https://en.wikipedia.org/wiki/Join_Five)) is a single-player pen-and-paper game played on a grid. You start from a cross-shaped pattern of dots and take turns placing a new dot such that it completes a line of exactly *n* dots (including itself). The goal is to place as many dots as possible before no moves remain. It is a simple game, but with a very interesting dynamics. In its classical version, a [world record of 172 points](http://www.chrisrosin.com/morpion/index.html) has been obtained using a Monte-Carlo search
+
 
 The package supports four variants of the game:
 
-| Class     | Line length | Rule     | Description                                  |
-|-----------|-------------|----------|----------------------------------------------|
-| `Game5T`  | 5           | Touching | Lines may share endpoints (default)          |
-| `Game5D`  | 5           | Disjoint | Lines must not share any points              |
-| `Game4T`  | 4           | Touching | Shorter lines, touching variant              |
-| `Game4D`  | 4           | Disjoint | Shorter lines, disjoint variant              |
+| Class     | Line length | Rule     | Description                             |
+|-----------|-------------|----------|-----------------------------------------|
+| `Game5T`  | 5           | Touching | Lines may share endpoints (default)     |
+| `Game5D`  | 5           | Disjoint | Parallel lines must not share endpoints |
+| `Game4T`  | 4           | Touching | Lines may share endpoints               |
+| `Game4D`  | 4           | Disjoint | Parallel lines must not share endpoints |
 
 ## Installation
 
@@ -51,10 +53,8 @@ print(game.getScore())          # 0 — no moves played yet
 print(game.getNumberOfMoves())  # 28 — possible moves at the start
 
 # Play a random move, then play randomly to the end
-game.playAtRandom()
-game.playAtRandom()  # play n moves: game.playAtRandom(n)
-
-game.playAtRandom()  # with no argument, plays until no moves remain
+game.playAtRandom(1)
+game.playAtRandom()  # play n moves: game.playAtRandom(n); with no argument, plays until no moves remain
 print(game.getScore())          # typically 50–70 for a random game
 print(game.getNumberOfMoves())  # 0 — game is over
 ```
@@ -65,7 +65,7 @@ Two Jupyter notebooks are provided as examples:
 - [01_basic_usage](./examples/01_basic_usage.ipynb) shows how the module works.
 - [02_statistics](./examples/02_statistics.ipynb) explores the outcome of Monte-Carlo simulations of the game, both using a naive approach and the more advanced [Nested Monte-Carlo search method of Tristan Cazenave](https://www.ijcai.org/Proceedings/09/Papers/083.pdf).
 
-## Playing strategies
+## Usage
 
 ### Random play
 
@@ -78,7 +78,7 @@ game.playAtRandom()          # play to the end (no argument = until stuck)
 
 ### Nested Monte Carlo Search
 
-[Nested Monte Carlo Search (NMCS)](https://en.wikipedia.org/wiki/Nested_Monte_Carlo_search) is a planning algorithm that generally reaches much higher scores than random play. Higher levels are stronger but slower.
+Nested Monte-Carlo search is a planning algorithm that generally reaches much higher scores than random play. Higher levels are stronger but slower.
 
 ```python
 game = Game5T()
@@ -102,7 +102,7 @@ game.playByIndex(0)             # play the first available move
 game.playByIndex(3)             # play the fourth available move
 ```
 
-## Undoing moves
+### Undoing moves
 
 ```python
 game = Game5T()
@@ -126,7 +126,7 @@ game.revertToScore(20)          # undo moves until score == 20
 game.revertToRandomScore()      # revert to a uniformly random score along the history
 ```
 
-## Deleting a candidate move
+### Deleting a candidate move
 
 You can permanently remove a move from the set of legal options at the current position — useful for guided search:
 
@@ -137,14 +137,14 @@ game.deleteMoveByIndex(4)
 print(game.getNumberOfMoves())    # 27
 ```
 
-## Exploring and estimating depth
+### Exploring and estimating depth
 
 `exploreDepth(cutoff)` performs a systematic depth-first search up to `cutoff` nodes visited and returns the deepest score found:
 
 ```python
 game = Game5T()
 best = game.exploreDepth(10)    # visit up to 10 nodes
-print(best)                     # deepest score found so far
+print(game.getScore())          # deepest score found so far
 ```
 
 `estimateDepth()` estimates the average depth reachable from the current position by sampling random playouts:
@@ -154,7 +154,7 @@ game = Game5T()
 print(game.estimateDepth())     # typical score from here, via random play
 ```
 
-## Saving and loading games
+### Saving and loading games
 
 Games are serialised to JSON:
 
@@ -175,7 +175,7 @@ restored = Game5T.load("my_game.json")
 print(restored.getScore() == game.getScore())   # True
 ```
 
-## Getting the board as a NumPy array
+### Getting the board as a NumPy array
 
 The board state is available as a 2D boolean array, and the set of candidate moves as a 3D array:
 
@@ -195,7 +195,7 @@ print(moves.shape)
 
 These are particularly useful as inputs to neural networks or other machine-learning models.
 
-## Visualisation
+### Visualisation
 
 Requires matplotlib (`pip install "morpion-solitaire[viz]"`).
 
@@ -207,7 +207,7 @@ game.print()               # display the current board
 game.printMove(0)          # display the board with move 0 highlighted in blue
 ```
 
-## Starting position variants
+### Starting position variants
 
 The default starting position is a cross (`'c'`). A pipe-shaped starting position is also available:
 
@@ -237,9 +237,6 @@ elapsed = time.perf_counter() - t0
 print(f"{n / elapsed:.0f} random games/second")
 ```
 
-## Licence
-
-MIT
 
 ## Development and running tests
 
